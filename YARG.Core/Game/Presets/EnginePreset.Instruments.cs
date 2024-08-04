@@ -11,7 +11,7 @@ namespace YARG.Core.Game
         public const double DEFAULT_WHAMMY_BUFFER = 0.25;
 
         public const int DEFAULT_MAX_MULTIPLIER = 4;
-        public const int BASS_MAX_MULTIPLIER    = 6;
+        public const int BASS_MAX_MULTIPLIER = 6;
 
         /// <summary>
         /// A preset for a hit window. This should
@@ -37,12 +37,12 @@ namespace YARG.Core.Game
         /// </summary>
         public class FiveFretGuitarPreset
         {
-            public bool AntiGhosting     = true;
+            public bool AntiGhosting = true;
             public bool InfiniteFrontEnd = false;
 
             public double HopoLeniency = 0.08;
 
-            public double StrumLeniency      = 0.05;
+            public double StrumLeniency = 0.05;
             public double StrumLeniencySmall = 0.025;
 
             public HitWindowPreset HitWindow = new()
@@ -114,7 +114,7 @@ namespace YARG.Core.Game
                     mode);
             }
         }
-    
+
 
         /// <summary>
         /// The engine preset for vocals/harmonies.
@@ -149,42 +149,42 @@ namespace YARG.Core.Game
                 };
             }
 
-            public VocalsEngineParameters Create(float[] starMultiplierThresholds, Difficulty difficulty, float updatesPerSecond)
+            public VocalsEngineParameters Create(float[] starMultiplierThresholds, Difficulty difficulty, float updatesPerSecond, bool singToActivateStarPower)
             {
                 // Hit window is in semitones (max. difference between correct pitch and sung pitch).
                 double windowSize = difficulty switch
                 {
-                    Difficulty.Easy   => WindowSizeE,
+                    Difficulty.Easy => WindowSizeE,
                     Difficulty.Medium => WindowSizeM,
-                    Difficulty.Hard   => WindowSizeH,
+                    Difficulty.Hard => WindowSizeH,
                     Difficulty.Expert => WindowSizeX,
                     _ => throw new InvalidOperationException("Unreachable")
                 };
 
                 double hitPercent = difficulty switch
                 {
-                    Difficulty.Easy   => HitPercentE,
+                    Difficulty.Easy => HitPercentE,
                     Difficulty.Medium => HitPercentM,
-                    Difficulty.Hard   => HitPercentH,
+                    Difficulty.Hard => HitPercentH,
                     Difficulty.Expert => HitPercentX,
                     _ => throw new InvalidOperationException("Unreachable")
                 };
 
                 int pointsPerPhrase = difficulty switch
                 {
-                    Difficulty.Easy   => 400,
+                    Difficulty.Easy => 400,
                     Difficulty.Medium => 800,
-                    Difficulty.Hard   => 1600,
+                    Difficulty.Hard => 1600,
                     Difficulty.Expert => 2000,
                     _ => throw new InvalidOperationException("Unreachable")
                 };
                 var hitWindow = new HitWindowSettings(windowSize, 0.03, 1, false);
                 return new VocalsEngineParameters(
-                    hitWindow, 
+                    hitWindow,
                     EnginePreset.DEFAULT_MAX_MULTIPLIER,
-                    starMultiplierThresholds, 
-                    hitPercent, 
-                    true, 
+                    starMultiplierThresholds,
+                    hitPercent,
+                    singToActivateStarPower,
                     updatesPerSecond,
                     pointsPerPhrase);
             }
