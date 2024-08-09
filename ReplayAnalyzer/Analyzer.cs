@@ -1,4 +1,4 @@
-using YARG.Core;
+﻿using YARG.Core;
 using YARG.Core.Chart;
 using YARG.Core.Engine;
 using YARG.Core.Engine.Drums;
@@ -135,7 +135,7 @@ public class Analyzer
         }
 
         // Done!
-        int score = engine.BaseStats.TotalScore;
+        int score = engine.BaseStats.TotalIndividualScore;
         Console.WriteLine($"> Done running for {replayFrame.PlayerInfo.Profile.Name}, final score: {score}");
         _currentBandScore += score;
 

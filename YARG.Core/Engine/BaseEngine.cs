@@ -501,10 +501,33 @@ namespace YARG.Core.Engine
 
         protected abstract void AddScore(TNoteType note);
 
-        protected void AddScore(int score)
+        protected void AddScore(int score, bool applyBandMultplier = true)
         {
+            if (applyBandMultplier)
+            {
+                AddBandBonus(score, BaseState.BandMultiplier);
+            }
             EngineStats.CommittedScore += score;
             UpdateStars();
+        }
+
+        protected void AddBandBonus(int score, int bandMultiplier)
+        {
+            if (EngineStats.IsStarPowerActive)
+            {
+                // If a player's Star Power is active, the provided score value will be doubled. Revert that before applying Band Bonus Score.   
+                score /= 2;
+            }
+
+            var multiplierFromOthers = bandMultiplier - 1;
+            if (EngineStats.IsStarPowerActive)
+            {
+                // For example, one player with Star Power active should earn no Band Bonus when they earn points - the full amount will be applied to their individual score only.
+                multiplierFromOthers--;
+            }
+
+            multiplierFromOthers = Math.Max(0, multiplierFromOthers);
+            EngineStats.BandBonusScore += score * multiplierFromOthers;
         }
 
         protected void UpdateStars()
@@ -593,7 +616,7 @@ namespace YARG.Core.Engine
                     nextNote = nextNote.NextNote;
                 }
             }
-            
+
             OnStarPowerPhraseMissed?.Invoke(note);
         }
 

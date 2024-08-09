@@ -22,12 +22,12 @@ namespace YARG.Core.Engine
         public int PendingScore;
 
         /// <summary>
-        /// Total score across all score values.
+        /// Total score across all score values, but excluding band multiplier bonus points.
         /// </summary>
         /// <remarks>
         /// Calculated from <see cref="CommittedScore"/>, <see cref="PendingScore"/>, and <see cref="SoloBonuses"/>.
         /// </remarks>
-        public int TotalScore => CommittedScore + PendingScore + SoloBonuses;
+        public int TotalIndividualScore => CommittedScore + PendingScore + SoloBonuses;
 
         /// <summary>
         /// The score used to calculate star progress.
@@ -112,6 +112,11 @@ namespace YARG.Core.Engine
         public int SoloBonuses;
 
         /// <summary>
+        /// Amount of points earned due to active band multipliers.
+        /// </summary>
+        public int BandBonusScore;
+
+        /// <summary>
         /// The number of stars the player has achieved, along with the progress to the next star.
         /// </summary>
         public float Stars;
@@ -124,6 +129,7 @@ namespace YARG.Core.Engine
         {
             CommittedScore = stats.CommittedScore;
             PendingScore = stats.PendingScore;
+            BandBonusScore = stats.BandBonusScore;
             Combo = stats.Combo;
             MaxCombo = stats.MaxCombo;
             ScoreMultiplier = stats.ScoreMultiplier;
@@ -145,6 +151,7 @@ namespace YARG.Core.Engine
         {
             CommittedScore = 0;
             PendingScore = 0;
+            BandBonusScore = 0;
             Combo = 0;
             MaxCombo = 0;
             ScoreMultiplier = 1;
@@ -167,6 +174,7 @@ namespace YARG.Core.Engine
         {
             writer.Write(CommittedScore);
             writer.Write(PendingScore);
+            writer.Write(BandBonusScore);
 
             writer.Write(Combo);
             writer.Write(MaxCombo);
@@ -192,6 +200,7 @@ namespace YARG.Core.Engine
         {
             CommittedScore = reader.ReadInt32();
             PendingScore = reader.ReadInt32();
+            BandBonusScore = reader.ReadInt32();
 
             Combo = reader.ReadInt32();
             MaxCombo = reader.ReadInt32();

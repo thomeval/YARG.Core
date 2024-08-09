@@ -27,6 +27,7 @@
         public bool AllowStarPower;
         public bool IsStarPowerInputActive;
         public uint StarPowerBaseTick;
+        public int BandMultiplier;
 
         public virtual void Reset()
         {
