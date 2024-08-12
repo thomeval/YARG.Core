@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using YARG.Core.Chart;
 using YARG.Core.Utility;
 using YARG.Core.Extensions;
+using System.Linq;
 
 namespace YARG.Core.Game
 {
@@ -70,6 +71,11 @@ namespace YARG.Core.Game
         [JsonProperty]
         public Modifier CurrentModifiers { get; private set; }
 
+        /// <summary>
+        /// Indicates whether this profile's CurrentInstrument is a valid instrument for the currently selected GameMode.
+        /// </summary>
+        public bool HasValidInstrument => GameMode.PossibleInstruments().Contains(CurrentInstrument);
+
         public YargProfile()
         {
             Id = Guid.NewGuid();
@@ -90,6 +96,16 @@ namespace YARG.Core.Game
         public YargProfile(Guid id) : this()
         {
             Id = id;
+        }
+
+        public void SetGameMode(GameMode gameMode)
+        {
+            GameMode = gameMode;
+
+            if (!HasValidInstrument)
+            {
+                CurrentInstrument = GameMode.PossibleInstruments()[0];
+            }
         }
 
         public void AddSingleModifier(Modifier modifier)
