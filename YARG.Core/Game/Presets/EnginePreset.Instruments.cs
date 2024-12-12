@@ -17,6 +17,9 @@ namespace YARG.Core.Game
         public const int DEFAULT_MAX_MULTIPLIER = 4;
         public const int BASS_MAX_MULTIPLIER    = 6;
 
+        public const int STREAK_PER_MULTIPLIER_KEYS    = 8;
+        public const int STREAK_PER_MULTIPLIER_DEFAULT = 10;
+
         /// <summary>
         /// A preset for a hit window. This should
         /// be used within each engine preset class.
@@ -117,7 +120,7 @@ namespace YARG.Core.Game
                 };
             }
 
-            public GuitarEngineParameters Create(float[] starMultiplierThresholds, bool isBass)
+            public GuitarEngineParameters Create(float[] starMultiplierThresholds, bool isBass, bool isKeys)
             {
                 var hitWindow = HitWindow.Create();
                 return new GuitarEngineParameters(
@@ -130,7 +133,8 @@ namespace YARG.Core.Game
                     StrumLeniency,
                     StrumLeniencySmall,
                     InfiniteFrontEnd,
-                    AntiGhosting);
+                    AntiGhosting,
+                    isKeys ? STREAK_PER_MULTIPLIER_KEYS : STREAK_PER_MULTIPLIER_DEFAULT);
             }
         }
 
@@ -164,7 +168,8 @@ namespace YARG.Core.Game
                     hitWindow,
                     DEFAULT_MAX_MULTIPLIER,
                     starMultiplierThresholds,
-                    mode);
+                    mode,
+                    STREAK_PER_MULTIPLIER_DEFAULT);
             }
         }
 
@@ -266,7 +271,8 @@ namespace YARG.Core.Game
                     hitPercent,
                     updatesPerSecond,
                     singToActivateStarPower,
-                    pointsPerPhrase);
+                    pointsPerPhrase,
+                    streakPerMultiplier: 1);
             }
         }
 
@@ -316,7 +322,8 @@ namespace YARG.Core.Game
                     SustainDropLeniency,
                     starMultiplierThresholds,
                     ChordStaggerWindow,
-                    FatFingerWindow);
+                    FatFingerWindow,
+                    STREAK_PER_MULTIPLIER_DEFAULT);
             }
         }
     }

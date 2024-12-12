@@ -13,8 +13,8 @@ namespace YARG.Core.Engine.Guitar
 
         public GuitarEngineParameters(HitWindowSettings hitWindow, int maxMultiplier, double spWhammyBuffer,
             double sustainDropLeniency, float[] starMultiplierThresholds, double hopoLeniency, double strumLeniency,
-            double strumLeniencySmall, bool infiniteFrontEnd, bool antiGhosting)
-            : base(hitWindow, maxMultiplier, spWhammyBuffer, sustainDropLeniency, starMultiplierThresholds)
+            double strumLeniencySmall, bool infiniteFrontEnd, bool antiGhosting, int streakPerMultiplier)
+            : base(hitWindow, maxMultiplier, spWhammyBuffer, sustainDropLeniency, starMultiplierThresholds, streakPerMultiplier)
         {
             HopoLeniency = hopoLeniency;
 

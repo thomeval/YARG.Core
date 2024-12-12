@@ -11,6 +11,8 @@ namespace YARG.Core.Engine
 
         public readonly int MaxMultiplier;
 
+        public readonly int StreakPerMultiplier;
+
         public readonly double StarPowerWhammyBuffer;
 
         public readonly double SustainDropLeniency;
@@ -20,13 +22,14 @@ namespace YARG.Core.Engine
         public double SongSpeed;
 
         protected BaseEngineParameters(HitWindowSettings hitWindow, int maxMultiplier, double spWhammyBuffer,
-            double sustainDropLeniency, float[] starMultiplierThresholds)
+            double sustainDropLeniency, float[] starMultiplierThresholds, int streakPerMultiplier)
         {
             HitWindow = hitWindow;
             StarPowerWhammyBuffer = spWhammyBuffer;
             SustainDropLeniency = sustainDropLeniency;
             MaxMultiplier = maxMultiplier;
             StarMultiplierThresholds = starMultiplierThresholds;
+            StreakPerMultiplier = streakPerMultiplier;
         }
 
         protected BaseEngineParameters(UnmanagedMemoryStream stream, int version)
@@ -47,6 +50,8 @@ namespace YARG.Core.Engine
             }
 
             SongSpeed = stream.Read<double>(Endianness.Little);
+
+            StreakPerMultiplier = stream.Read<int>(Endianness.Little);
         }
 
         public virtual void Serialize(BinaryWriter writer)
@@ -65,6 +70,8 @@ namespace YARG.Core.Engine
             }
 
             writer.Write(SongSpeed);
+
+            writer.Write(StreakPerMultiplier);
         }
 
         public override string ToString()
