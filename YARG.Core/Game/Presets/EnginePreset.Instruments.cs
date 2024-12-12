@@ -17,8 +17,8 @@ namespace YARG.Core.Game
         public const int DEFAULT_MAX_MULTIPLIER = 4;
         public const int BASS_MAX_MULTIPLIER    = 6;
 
-        public const int STREAK_PER_MULTIPLIER_KEYS    = 8;
-        public const int STREAK_PER_MULTIPLIER_DEFAULT = 10;
+        public const int KEYS_STREAK_PER_MULTIPLIER    = 6;
+        public const int DEFAULT_STREAK_PER_MULTIPLIER = 10;
 
         /// <summary>
         /// A preset for a hit window. This should
@@ -134,7 +134,7 @@ namespace YARG.Core.Game
                     StrumLeniencySmall,
                     InfiniteFrontEnd,
                     AntiGhosting,
-                    isKeys ? STREAK_PER_MULTIPLIER_KEYS : STREAK_PER_MULTIPLIER_DEFAULT);
+                    isKeys ? KEYS_STREAK_PER_MULTIPLIER : DEFAULT_STREAK_PER_MULTIPLIER);
             }
         }
 
@@ -169,7 +169,7 @@ namespace YARG.Core.Game
                     DEFAULT_MAX_MULTIPLIER,
                     starMultiplierThresholds,
                     mode,
-                    STREAK_PER_MULTIPLIER_DEFAULT);
+                    DEFAULT_STREAK_PER_MULTIPLIER);
             }
         }
 
@@ -323,7 +323,7 @@ namespace YARG.Core.Game
                     starMultiplierThresholds,
                     ChordStaggerWindow,
                     FatFingerWindow,
-                    STREAK_PER_MULTIPLIER_DEFAULT);
+                    KEYS_STREAK_PER_MULTIPLIER);
             }
         }
     }

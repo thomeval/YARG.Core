@@ -459,7 +459,7 @@ namespace YARG.Core.Engine
 
         protected virtual void UpdateMultiplier()
         {
-            BaseStats.ScoreMultiplier = Math.Min((BaseStats.Combo / 10) + 1, BaseParameters.MaxMultiplier);
+            BaseStats.ScoreMultiplier = Math.Min((BaseStats.Combo / BaseParameters.StreakPerMultiplier) + 1, BaseParameters.MaxMultiplier);
 
             if (BaseStats.IsStarPowerActive)
             {

@@ -310,7 +310,7 @@ namespace YARG.Core.Engine.Vocals
 
         protected override void UpdateMultiplier()
         {
-            EngineStats.ScoreMultiplier = Math.Min(EngineStats.Combo + 1, 4);
+            EngineStats.ScoreMultiplier = Math.Min((EngineStats.Combo / BaseParameters.StreakPerMultiplier) + 1, BaseParameters.MaxMultiplier);
 
             if (EngineStats.IsStarPowerActive)
             {
