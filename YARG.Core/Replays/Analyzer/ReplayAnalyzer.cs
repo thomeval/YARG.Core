@@ -330,7 +330,7 @@ namespace YARG.Core.Replays.Analyzer
 
         private static bool IsPassResult(BaseStats original, BaseStats result)
         {
-            YargLogger.LogFormatDebug("Score: {0} == {1}\nHit: {2} == {3}\nMissed: {4} == {5}\nCombo: {6} == {7}\nMaxCombo: {8} == {9}\n",
+            YargLogger.LogFormatDebug("Score: {0} == {1}\nHit: {2} == {3}\nMissed: {4} == {5}\nCombo: {6} == {7}\nMaxCombo: {8} == {9}",
                 original.CommittedScore, result.CommittedScore,
                 original.NotesHit, result.NotesHit,
                 original.NotesMissed, result.NotesMissed,
@@ -344,6 +344,12 @@ namespace YARG.Core.Replays.Analyzer
                 original.StarPowerPhrasesHit, result.StarPowerPhrasesHit,
                 original.TimeInStarPower, result.TimeInStarPower,
                 original.TotalStarPowerTicks, result.TotalStarPowerTicks);
+
+            YargLogger.LogFormatDebug("Stars: {0:F3} == {1:F3}\nPercent:{2:P1} == {3:P1}\nSPM: {4}\nCombo Increment: {5}",
+                original.Stars, result.Stars,
+                original.Percent, result.Percent,
+                EnginePreset.KEYS_STREAK_PER_MULTIPLIER, EnginePreset.KEYS_COMBO_INC_PER_CHORD ? "Chord" : "Note",0 ,0);
+
 
             bool instrumentPass = true;
 

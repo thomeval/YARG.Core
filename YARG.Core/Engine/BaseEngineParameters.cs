@@ -11,7 +11,7 @@ namespace YARG.Core.Engine
 
         public readonly int MaxMultiplier;
 
-        public readonly int StreakPerMultiplier;
+        public int StreakPerMultiplier;
 
         public readonly double StarPowerWhammyBuffer;
 
