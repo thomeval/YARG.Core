@@ -219,14 +219,14 @@ namespace YARG.Core.Engine.ProKeys
             }
 
             // Only increase combo for the first note in a chord
-            if (!partiallyHit)
+            if (!partiallyHit || !EngineParameters.IncrementComboPerChord)
             {
                 EngineStats.Combo++;
-
-                if (EngineStats.Combo > EngineStats.MaxCombo)
-                {
-                    EngineStats.MaxCombo = EngineStats.Combo;
-                }
+            }
+            
+            if (EngineStats.Combo > EngineStats.MaxCombo)
+            {
+                EngineStats.MaxCombo = EngineStats.Combo;
             }
 
             EngineStats.NotesHit++;
