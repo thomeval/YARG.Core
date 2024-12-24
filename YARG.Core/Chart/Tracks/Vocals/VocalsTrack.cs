@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using YARG.Core.Extensions;
 
 namespace YARG.Core.Chart
@@ -97,6 +98,11 @@ namespace YARG.Core.Chart
         public VocalsTrack Clone()
         {
             return new(this);
+        }
+
+        public InstrumentDifficulty<VocalNote>[] CloneAsInstrumentDifficulties()
+        {
+            return Parts.Select(e => e.CloneAsInstrumentDifficulty()).ToArray(); 
         }
     }
 }

@@ -205,6 +205,14 @@ namespace YARG.Core.Game
             }
         }
 
+        public void ApplyVocalModifiers(VocalsTrack vocalsTrack)
+        {
+            foreach (var part in vocalsTrack.Parts)
+            {
+                ApplyVocalModifiers(part);
+            }
+        }
+
         public void ApplyVocalModifiers(VocalsPart vocalsPart)
         {
             if (IsModifierActive(Modifier.UnpitchedOnly))
