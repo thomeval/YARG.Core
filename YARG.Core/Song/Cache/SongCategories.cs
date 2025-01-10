@@ -18,13 +18,12 @@ namespace YARG.Core.Song.Cache
 
         public string GetKey(SongEntry entry)
         {
-            var name = entry.Name;
-            return name.Group switch
+            return entry.Name.Group switch
             {
                 CharacterGroup.Empty or
                 CharacterGroup.AsciiSymbol => "*",
                 CharacterGroup.AsciiNumber => "0-9",
-                _ => char.ToUpperInvariant(name.SortStr[0]).ToString(),
+                _ => char.ToUpperInvariant(entry.Name.SortStr[0]).ToString(),
             };
         }
     }
@@ -56,13 +55,13 @@ namespace YARG.Core.Song.Cache
         public EntryComparer Comparer => _COMPARER;
         public string GetKey(SongEntry entry)
         {
-            return (entry.SongLengthMilliseconds / MILLISECONDS_PER_MINUTE) switch
+            return entry.SongLengthMilliseconds switch
             {
-                < 2 => "00:00 - 02:00",
-                < 5 => "02:00 - 05:00",
-                < 10 => "05:00 - 10:00",
-                < 15 => "10:00 - 15:00",
-                < 20 => "15:00 - 20:00",
+                <  2 * MILLISECONDS_PER_MINUTE => "00:00 - 02:00",
+                <  5 * MILLISECONDS_PER_MINUTE => "02:00 - 05:00",
+                < 10 * MILLISECONDS_PER_MINUTE => "05:00 - 10:00",
+                < 15 * MILLISECONDS_PER_MINUTE => "10:00 - 15:00",
+                < 20 * MILLISECONDS_PER_MINUTE => "15:00 - 20:00",
                 _ => "20:00+",
             };
         }
