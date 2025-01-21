@@ -40,23 +40,28 @@ namespace YARG.Core.Engine.Vocals
         /// <summary>
         /// The amount of ticks in the current phrase.
         /// </summary>
-        public uint? PhraseTicksTotal { get; protected set; }
+        public uint?[] PhraseTicksTotal { get; protected set; } = new uint?[VOCAL_PARTS_COUNT];
 
         /// <summary>
         /// The amount of ticks hit in the current phrase.
         /// This is a decimal since you can get fractions of a point for singing slightly off.
         /// </summary>
-        public double PhraseTicksHit { get; protected set; }
+        public double[] PhraseTicksHit { get; protected set; } = new double[VOCAL_PARTS_COUNT];
 
         /// <summary>
         /// The last tick where there was a successful sing input.
         /// </summary>
         public uint LastSingTick { get; protected set; }
 
-        protected VocalsEngine(InstrumentDifficulty<VocalNote> chart, SyncTrack syncTrack,
+        public const int VOCAL_PARTS_COUNT = 3;
+
+        public readonly InstrumentDifficulty<VocalNote>[] VocalCharts;
+
+        protected VocalsEngine(InstrumentDifficulty<VocalNote>[] charts, SyncTrack syncTrack,
             VocalsEngineParameters engineParameters, bool isBot)
-            : base(chart, syncTrack, engineParameters, false, isBot)
+            : base(charts[0], syncTrack, engineParameters, false, isBot)
         {
+            VocalCharts = charts;
         }
 
         public override void Reset(bool keepCurrentButtons = false)
@@ -64,8 +69,8 @@ namespace YARG.Core.Engine.Vocals
             HasSang = false;
             PitchSang = 0f;
 
-            PhraseTicksTotal = null;
-            PhraseTicksHit = 0;
+            PhraseTicksTotal = new uint?[3];
+            PhraseTicksHit = new double[3];
 
             LastSingTick = 0;
 

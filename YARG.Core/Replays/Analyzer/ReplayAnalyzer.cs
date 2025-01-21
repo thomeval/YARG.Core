@@ -276,8 +276,7 @@ namespace YARG.Core.Replays.Analyzer
                 case GameMode.Vocals:
                 {
                     // Get the notes
-                    var notes = _chart.GetVocalsTrack(profile.CurrentInstrument)
-                        .Parts[profile.HarmonyIndex].CloneAsInstrumentDifficulty();
+                    var notes = _chart.GetVocalsTrack(profile.CurrentInstrument).CloneAsInstrumentDifficulties();
 
                     // No idea how vocals applies modifiers lol
                     //profile.ApplyModifiers(notes);

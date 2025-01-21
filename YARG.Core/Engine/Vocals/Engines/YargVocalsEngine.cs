@@ -9,7 +9,7 @@ namespace YARG.Core.Engine.Vocals.Engines
     {
         public YargVocalsEngine(InstrumentDifficulty<VocalNote>[] charts, SyncTrack syncTrack,
             VocalsEngineParameters engineParameters, bool isBot)
-            : base(chart, syncTrack, engineParameters, isBot)
+            : base(charts, syncTrack, engineParameters, isBot)
         {
         }
 
@@ -79,40 +79,48 @@ namespace YARG.Core.Engine.Vocals.Engines
 
             UpdateBot(time);
 
-            var phrase = Notes[NoteIndex];
-            PhraseTicksTotal ??= GetTicksInPhrase(phrase);
+            for (int  i = 0; i < VOCAL_PARTS_COUNT; i++)
+            {
+                UpdateHitLogicForPart(time, i);       
+            }
 
+        }
+
+        private void UpdateHitLogicForPart(double time, int partIndex)
+        {
+            var phrase = VocalCharts[NoteIndex].Notes[NoteIndex];
+            PhraseTicksTotal[partIndex] ??= GetTicksInPhrase(phrase);
             CheckForNoteHit();
 
             // Check for the end of a phrase
             if (CurrentTick > phrase.TickEnd)
             {
-                bool hasNotes = PhraseTicksTotal.Value != 0;
+                bool hasNotes = PhraseTicksTotal[partIndex].GetValueOrDefault() != 0;
 
-                var percentHit = PhraseTicksHit / PhraseTicksTotal.Value;
-                if (!hasNotes)
+                var percentHit = 1.0;
+                if (hasNotes)
                 {
-                    percentHit = 1.0;
+                    percentHit = PhraseTicksHit[partIndex] / PhraseTicksTotal[partIndex].Value;
                 }
 
                 bool hit = percentHit >= EngineParameters.PhraseHitPercent;
                 if (hit)
                 {
-                    EngineStats.TicksHit += PhraseTicksTotal.Value;
+                    EngineStats.TicksHit += PhraseTicksTotal[partIndex].Value;
                     HitNote(phrase);
                 }
                 else
                 {
-                    var ticksHit = (uint) Math.Round(PhraseTicksHit);
+                    var ticksHit = (uint) Math.Round(PhraseTicksHit[partIndex]);
 
                     EngineStats.TicksHit += ticksHit;
-                    EngineStats.TicksMissed += PhraseTicksTotal.Value - ticksHit;
+                    EngineStats.TicksMissed += PhraseTicksTotal[partIndex].Value - ticksHit;
 
                     MissNote(phrase, percentHit);
                 }
 
-                PhraseTicksHit = 0;
-                PhraseTicksTotal = null;
+                PhraseTicksHit[partIndex] = 0;
+                PhraseTicksTotal[partIndex] = null;
 
                 if (hasNotes)
                 {
@@ -137,6 +145,8 @@ namespace YARG.Core.Engine.Vocals.Engines
             HasSang = false;
             var lastSingTick = LastSingTick;
             LastSingTick = CurrentTick;
+
+            // TODO: Implement for multiple tracks
 
             // If the last sing detected was on the same tick (or less), skip it
             // since we've already handled that tick.
