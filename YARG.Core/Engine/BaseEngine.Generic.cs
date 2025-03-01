@@ -948,6 +948,12 @@ namespace YARG.Core.Engine
                     // Temporary fix by adding a check for the last measure
                     // Affects 1/1 time signatures
                     int curMeasureIndex = allMeasureBeatLines.GetIndexOfPrevious(noteOneTickEnd);
+                    if (curMeasureIndex == -1)
+                    {
+                        // In songs with no events at time 0, it's possible to have no previous note.
+                        // In that case, just use 0.
+                        curMeasureIndex = 0;
+                    }
                     if (allMeasureBeatLines[curMeasureIndex].Tick < noteOneTickEnd
                         && curMeasureIndex + 1 < allMeasureBeatLines.Count)
                     {
@@ -984,11 +990,6 @@ namespace YARG.Core.Engine
                         WaitCountdowns.Add(newCountdown);
                         YargLogger.LogFormatTrace("Created a WaitCountdown at time {0} of {1} measures and {2} seconds in length",
                                                  newCountdown.Time, countdownTotalMeasures, beatlinesThisCountdown[^1].Time - noteOneTimeEnd);
-                    }
-                    else
-                    {
-                        YargLogger.LogFormatTrace("Did not create a WaitCountdown at time {0} of {1} seconds in length because it was only {2} measures long",
-                                                 noteOneTimeEnd, beatlinesThisCountdown[^1].Time - noteOneTimeEnd, countdownTotalMeasures);
                     }
                 }
             }

@@ -2,7 +2,7 @@
 
 namespace YARG.Core.Song
 {
-    public static class Midi_Vocal_Preparser
+    internal static class Midi_Vocal_Preparser
     {
         private const int VOCAL_MIN = 36;
         private const int VOCAL_MAX = 84;
@@ -14,22 +14,22 @@ namespace YARG.Core.Song
         public static bool Parse(YARGMidiTrack track, bool isLeadVocals)
         {
             long vocalPosition = -1;
-            long lyricPosition = -1;
             long phrasePosition = -1;
             long percussionPosition = -1;
 
             var note = default(MidiNote);
-            while (track.ParseEvent())
+            var stats = default(YARGMidiTrack.Stats);
+            while (track.ParseEvent(ref stats))
             {
-                if (track.Type is MidiEventType.Note_On or MidiEventType.Note_Off)
+                if (stats.Type is MidiEventType.Note_On or MidiEventType.Note_Off)
                 {
                     track.ExtractMidiNote(ref note);
                     // Note Ons with no velocity equates to a note Off by spec
-                    if (track.Type == MidiEventType.Note_On && note.velocity > 0)
+                    if (stats.Type == MidiEventType.Note_On && note.velocity > 0)
                     {
                         if (VOCAL_MIN <= note.value && note.value <= VOCAL_MAX)
                         {
-                            vocalPosition = track.Position;
+                            vocalPosition = stats.Position;
                         }
                         else if (note.value == VOCAL_PHRASE_1 || note.value == VOCAL_PHRASE_2)
                         {
@@ -37,16 +37,14 @@ namespace YARG.Core.Song
                         }
                         else if (note.value == PERCUSSION_NOTE && isLeadVocals)
                         {
-                            percussionPosition = track.Position;
+                            percussionPosition = stats.Position;
                         }
                     }
                     // NoteOff from this point
                     else if (VOCAL_MIN <= note.value && note.value <= VOCAL_MAX)
                     {
-                        // Guarantees that a lyric-pitch pair is valid
-                        //
                         // HARM 2/3 do not use phrases defined in their own tracks to mark playable vocals
-                        if (vocalPosition >= 0 && lyricPosition >= vocalPosition && (track.Position <= phrasePosition || !isLeadVocals))
+                        if (vocalPosition >= 0 && (stats.Position <= phrasePosition || !isLeadVocals))
                         {
                             return true;
                         }
@@ -55,23 +53,15 @@ namespace YARG.Core.Song
                     else if (note.value == VOCAL_PHRASE_1 || note.value == VOCAL_PHRASE_2)
                     {
                         // Accounts for when a phrase ends at the same time as a vocal/precussion note but is in-file first
-                        phrasePosition = track.Position;
+                        phrasePosition = stats.Position;
                     }
                     else if (note.value == PERCUSSION_NOTE)
                     {
-                        if (percussionPosition >= 0 && track.Position <= phrasePosition)
+                        if (percussionPosition >= 0 && stats.Position <= phrasePosition)
                         {
                             return true;
                         }
                         percussionPosition = -1;
-                    }
-                }
-                else if (MidiEventType.Text <= track.Type && track.Type <= MidiEventType.Text_EnumLimit)
-                {
-                    var str = track.ExtractTextOrSysEx();
-                    if (str.Length == 0 || str[0] != '[')
-                    {
-                        lyricPosition = track.Position;
                     }
                 }
             }
