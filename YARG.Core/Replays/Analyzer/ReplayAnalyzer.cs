@@ -283,7 +283,8 @@ namespace YARG.Core.Replays.Analyzer
 
                     // Create engine
                     return new YargVocalsEngine(
-                        notes,
+                        // hate the double-clone lol but for now it'll be fine
+                        notes.CloneAsInstrumentDifficulty(),
                         _chart.SyncTrack,
                         (VocalsEngineParameters) parameters,
                         profile.IsBot);
