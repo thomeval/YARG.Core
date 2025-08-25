@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using Newtonsoft.Json;
 using YARG.Core.Chart;
@@ -11,7 +11,7 @@ namespace YARG.Core.Game
 {
     public class YargProfile
     {
-        private const int PROFILE_VERSION = 2;
+        private const int PROFILE_VERSION = 4;
 
         public Guid Id;
         public string Name;
@@ -24,6 +24,16 @@ namespace YARG.Core.Game
         public float HighwayLength;
 
         public bool LeftyFlip;
+
+        public bool RangeEnabled;
+
+        public bool UseCymbalModels;
+
+        public bool SplitProTomsAndCymbals;
+
+        public bool SwapSnareAndHiHat;
+
+        public bool SwapCrashAndRide;
 
         public int? AutoConnectOrder;
 
@@ -55,7 +65,7 @@ namespace YARG.Core.Game
 
         /// <summary>
         /// The difficulty to be saved in the profile.
-        /// 
+        ///
         /// If a song does not contain this difficulty, so long as the player
         /// does not *explicitly* and *manually* change the difficulty, this value
         /// should remain unchanged.
@@ -93,6 +103,11 @@ namespace YARG.Core.Game
             NoteSpeed = 6;
             HighwayLength = 1;
             LeftyFlip = false;
+            RangeEnabled = true;
+            UseCymbalModels = true;
+            SplitProTomsAndCymbals = false;
+            SwapSnareAndHiHat = false;
+            SwapCrashAndRide = false;
 
             // Set preset IDs to default
             ColorProfile = Game.ColorProfile.Default.Id;
@@ -133,6 +148,19 @@ namespace YARG.Core.Game
             LeftyFlip = stream.ReadBoolean();
 
             GameMode = CurrentInstrument.ToGameMode();
+
+            if (version >= 3)
+            {
+                RangeEnabled = stream.ReadBoolean();
+            }
+
+            if (version >= 4)
+            {
+                UseCymbalModels = stream.ReadBoolean();
+                SplitProTomsAndCymbals = stream.ReadBoolean();
+                SwapSnareAndHiHat = stream.ReadBoolean();
+                SwapCrashAndRide = stream.ReadBoolean();
+            }
         }
 
         public void AddSingleModifier(Modifier modifier)
@@ -189,6 +217,10 @@ namespace YARG.Core.Game
                     {
                         guitarTrack.ConvertFromTypeToType(GuitarNoteType.Tap, GuitarNoteType.Hopo);
                     }
+                    else if (IsModifierActive(Modifier.RangeCompress))
+                    {
+                        guitarTrack.CompressGuitarRange();
+                    }
 
                     break;
                 case GameMode.FourLaneDrums:
@@ -220,6 +252,11 @@ namespace YARG.Core.Game
             if (IsModifierActive(Modifier.UnpitchedOnly))
             {
                 vocalsPart.ConvertAllToUnpitched();
+            }
+
+            if (IsModifierActive(Modifier.NoVocalPercussion))
+            {
+                vocalsPart.RemovePercussion();
             }
         }
 
@@ -254,6 +291,13 @@ namespace YARG.Core.Game
             writer.Write(NoteSpeed);
             writer.Write(HighwayLength);
             writer.Write(LeftyFlip);
+
+            writer.Write(RangeEnabled);
+
+            writer.Write(UseCymbalModels);
+            writer.Write(SplitProTomsAndCymbals);
+            writer.Write(SwapSnareAndHiHat);
+            writer.Write(SwapCrashAndRide);
         }
     }
 }

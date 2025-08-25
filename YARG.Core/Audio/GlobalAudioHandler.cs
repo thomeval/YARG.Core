@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using YARG.Core.Logging;
 
 namespace YARG.Core.Audio
 {
@@ -13,7 +15,7 @@ namespace YARG.Core.Audio
 
     public static class GlobalAudioHandler
     {
-        public const int WHAMMY_FFT_DEFAULT = 512;
+        public const int WHAMMY_FFT_DEFAULT = 2048;
         public const int WHAMMY_OVERSAMPLE_DEFAULT = 8;
         public static readonly int MAX_THREADS = Environment.ProcessorCount switch
         {
@@ -31,26 +33,27 @@ namespace YARG.Core.Audio
 
             StemSettings = new()
             {
-                { SongStem.Song,    new StemSettings() },
-                { SongStem.Guitar,  new StemSettings() },
-                { SongStem.Bass,    new StemSettings() },
-                { SongStem.Rhythm,  new StemSettings() },
-                { SongStem.Keys,    new StemSettings() },
-                { SongStem.Vocals,  vocals },
-                { SongStem.Vocals1, vocals },
-                { SongStem.Vocals2, vocals },
-                { SongStem.Drums,   drums },
-                { SongStem.Drums1,  drums },
-                { SongStem.Drums2,  drums },
-                { SongStem.Drums3,  drums },
-                { SongStem.Drums4,  drums },
-                { SongStem.Crowd,   new StemSettings() },
-                { SongStem.Sfx,     new StemSettings() },
-                { SongStem.DrumSfx, new StemSettings() },
+                { SongStem.Song,     new StemSettings() },
+                { SongStem.Guitar,   new StemSettings() },
+                { SongStem.Bass,     new StemSettings() },
+                { SongStem.Rhythm,   new StemSettings() },
+                { SongStem.Keys,     new StemSettings() },
+                { SongStem.Vocals,   vocals },
+                { SongStem.Vocals1,  vocals },
+                { SongStem.Vocals2,  vocals },
+                { SongStem.Drums,    drums },
+                { SongStem.Drums1,   drums },
+                { SongStem.Drums2,   drums },
+                { SongStem.Drums3,   drums },
+                { SongStem.Drums4,   drums },
+                { SongStem.Crowd,    new StemSettings() },
+                { SongStem.Sfx,      new StemSettings() },
+                { SongStem.DrumSfx,  new StemSettings() },
+                { SongStem.VoxSample, new StemSettings() },
             };
         }
 
-        internal static bool LogMixerStatus;
+        public static bool LogMixerStatus { get; internal set; }
 
         public static bool UseWhammyFx;
         public static bool IsChipmunkSpeedup;
@@ -256,6 +259,19 @@ namespace YARG.Core.Audio
                     throw new NotInitializedException();
                 }
                 _instance.DrumSfxSamples[(int) sample]?.Play(volume);
+            }
+        }
+
+        public static void PlayVoxSample(VoxSample sample)
+        {
+            lock (_instanceLock)
+            {
+                if (_instance == null)
+                {
+                    throw new NotInitializedException();
+                }
+
+                _instance.VoxSamples[(int) sample]?.Play();
             }
         }
 
